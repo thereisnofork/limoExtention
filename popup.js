@@ -55,6 +55,7 @@ hBtn.addEventListener("click", () => {
 
   lc.onicecandidate = (e) => {
     console.log("🚀  hBtn.onicecandidate  e:", e);
+    offerTokenEl.style.display = "block";
     offerTokenEl.innerText = JSON.stringify(lc.localDescription);
     copy(JSON.stringify(lc.localDescription));
   };
@@ -75,12 +76,13 @@ hBtn.addEventListener("click", () => {
 
     lc.setRemoteDescription(recivedAnswer)
       .then((e) => {
-        console.log("🚀  .then  e:", e);
+        console.log("🚀 .then setRemoteDescription e:");
       })
       .catch((err) => console.log(err));
   };
 
   answerTokenEl.oninput = (e) => {
+    e.preventDefault();
     if (tryParseJSONObject(e.target.value)) {
       answerTokenEl.classList.remove("r-border");
       answerTokenEl.classList.add("g-border");
@@ -88,6 +90,7 @@ hBtn.addEventListener("click", () => {
       answerTokenEl.classList.remove("g-border");
       answerTokenEl.classList.add("r-border");
     }
+    e.target.value = e.target.value.trim();
   };
 });
 
@@ -101,6 +104,7 @@ cBtn.addEventListener("click", () => {
 
   rc.onicecandidate = (e) => {
     console.log("🚀  cBtn.onicecandidate  e:", e);
+    offerTokenEl.style.display = "block";
     offerTokenEl.innerText = JSON.stringify(rc.localDescription);
     copy(JSON.stringify(rc.localDescription));
   };
@@ -133,7 +137,7 @@ cBtn.addEventListener("click", () => {
 
     rc.setRemoteDescription(recivedOffer)
       .then((e) => {
-        console.log("🚀 .setRemoteDescription  e:", e);
+        console.log("🚀 .setRemoteDescription  e:");
       })
       .catch((err) => console.log(err));
 
@@ -146,6 +150,7 @@ cBtn.addEventListener("click", () => {
   };
 
   answerTokenEl.oninput = (e) => {
+    e.preventDefault();
     if (tryParseJSONObject(e.target.value)) {
       answerTokenEl.classList.remove("r-border");
       answerTokenEl.classList.add("g-border");
@@ -153,6 +158,7 @@ cBtn.addEventListener("click", () => {
       answerTokenEl.classList.remove("g-border");
       answerTokenEl.classList.add("r-border");
     }
+    e.target.value = e.target.value.trim();
   };
 });
 

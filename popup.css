@@ -21,16 +21,20 @@
 }
 
 .answer-token {
-  min-height: 150px;
-  border: 3px solid #70ccc7;
+  border: 3px solid silver;
   border-radius: 5px;
   font-size: 12px;
-  padding: 7px 10px;
-  white-space: break-spaces;
   display: none;
   margin: auto;
   transition: all 0.3s;
   outline: none;
+  white-space: nowrap;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  height: 35px;
+  width: 350px;
+  resize: none;
+  padding: 2px;
 }
 
 .r-border {
@@ -41,9 +45,16 @@
 }
 
 #offer-token {
+  display: none;
   max-width: 350px;
   margin: 20px auto;
   transition: all 0.3s;
+  white-space: nowrap;
+  overflow-x: auto;
+  border: 3px solid gold;
+  border-radius: 5px;
+  height: 35px;
+  padding: 2px;
 }
 
 .question {
@@ -56,4 +67,13 @@
   padding-bottom: 30px;
   padding-top: 20px;
   transition: all 0.3s;
+}
+
+.container {
+  width: 380px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
