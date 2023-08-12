@@ -1,0 +1,59 @@
+#h-btn {
+  background-color: wheat;
+  border-radius: 3px;
+  text-align: center;
+  padding: 3px 10px;
+  font-size: large;
+  width: 100%;
+  margin-bottom: 5px;
+  transition: all 0.3s;
+}
+
+#c-btn {
+  background-color: wheat;
+  border-radius: 3px;
+  text-align: center;
+  padding: 3px 10px;
+  font-size: large;
+  width: 100%;
+  margin-bottom: 5px;
+  transition: all 0.3s;
+}
+
+.answer-token {
+  min-height: 150px;
+  border: 3px solid #70ccc7;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 7px 10px;
+  white-space: break-spaces;
+  display: none;
+  margin: auto;
+  transition: all 0.3s;
+  outline: none;
+}
+
+.r-border {
+  border: 3px solid #cc7670;
+}
+.g-border {
+  border: 3px solid #70cc75;
+}
+
+#offer-token {
+  max-width: 350px;
+  margin: 20px auto;
+  transition: all 0.3s;
+}
+
+.question {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  color: #70cc75;
+  padding-bottom: 30px;
+  padding-top: 20px;
+  transition: all 0.3s;
+}

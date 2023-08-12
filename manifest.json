@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Limo",
+  "version": "1.0",
+  "description": "Introducing our new Chrome extension that allows you to sync online videos and watch them together with friends and family. With our extension, you can easily create a private room and invite others to join. Once everyone is in the room, you can select a video from popular video hosting platforms such as YouTube, Vimeo, and Twitch and start watching together in real-time. Our extension features a synchronized video player that ensures that everyone is watching the same video at the same time, no matter where they are in the world. The player also allows you to pause, play, and seek the video, so you can watch at your own pace. In addition to the video player, our extension also features a chat window that allows you to chat with other viewers in real-time. You can share your thoughts about the video, ask questions, or just chat about anything that comes to mind. Our extension also includes a backend server that handles the synchronization of the video player and chat window across all users in the room. The server ensures that everyone is watching the same video at the same time, and broadcasts updates to all users in real-time. Whether you're watching a movie with friends or catching up on your favorite TV show with family, our Chrome extension makes it easy to sync online videos and watch them together. Install our extension today and start watching together with friends and family!",
+  "icons": {
+    "16": "images/video16.png",
+    "48": "images/video32.png",
+    "128": "images/video128.png"
+  },
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "tabs",
+    "declarativeNetRequest",
+    "webRequest",
+    "storage",
+    "declarativeNetRequestFeedback"
+  ],
+
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "action": {
+    "default_title": "Limo",
+    "default_icon": "images/video16.png",
+    "default_popup": "popup.html"
+  }
+}
