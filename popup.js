@@ -8,7 +8,7 @@ const showSuccessUI = () => {
   bodyEl.innerText = "conention completion";
 };
 
-function tryParseJSONObject(jsonString) {
+const tryParseJSONObject = (jsonString) => {
   try {
     const o = JSON.parse(jsonString);
 
@@ -18,52 +18,38 @@ function tryParseJSONObject(jsonString) {
   } catch (e) {}
 
   return false;
-}
+};
 
 const copy = (value) => {
   navigator.clipboard.writeText(value);
 };
 
-const servers = {
-  iceServers: [
-    {
-      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
-    },
-  ],
-  iceCandidatePoolSize: 10,
+let isHost = false;
+
+answerTokenEl.oninput = (e) => {
+  e.preventDefault();
+  if (tryParseJSONObject(e.target.value)) {
+    answerTokenEl.classList.remove("r-border");
+    answerTokenEl.classList.add("g-border");
+  } else {
+    answerTokenEl.classList.remove("g-border");
+    answerTokenEl.classList.add("r-border");
+  }
+  e.target.value = e.target.value.trim();
 };
 
 hBtn.addEventListener("click", () => {
+  isHost = true;
+
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      type: "click",
+      value: "hostClicked",
+    });
+  });
+
   hBtn.parentElement.style.display = "none";
   answerTokenEl.style.display = "block";
-
-  const lc = new RTCPeerConnection(servers);
-  const dc = lc.createDataChannel("channel");
-
-  dc.onopen = (e) => {
-    console.log("🚀  hBtn.  onopen:");
-    showSuccessUI();
-    window.baser = dc;
-  };
-
-  dc.onmessage = (e) => {
-    console.log("🚀  hBtn.onmessage  e:", e);
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, e.data);
-    });
-  };
-
-  lc.onicecandidate = (e) => {
-    console.log("🚀  hBtn.onicecandidate  e:", e);
-    offerTokenEl.style.display = "block";
-    offerTokenEl.innerText = JSON.stringify(lc.localDescription);
-    copy(JSON.stringify(lc.localDescription));
-  };
-
-  lc.createOffer()
-    .then((offer) => lc.setLocalDescription(offer))
-    .then(() => console.log("set successfully"))
-    .catch((err) => console.log(err));
 
   answerTokenEl.onkeydown = (e) => {
     if (e.key !== "Enter" || !tryParseJSONObject(e.target.value)) {
@@ -71,97 +57,59 @@ hBtn.addEventListener("click", () => {
     }
 
     e.preventDefault();
+    answerTokenEl.disabled = true;
 
     const recivedAnswer = JSON.parse(e.target.value);
 
-    lc.setRemoteDescription(recivedAnswer)
-      .then((e) => {
-        console.log("🚀 .then setRemoteDescription e:");
-      })
-      .catch((err) => console.log(err));
-  };
-
-  answerTokenEl.oninput = (e) => {
-    e.preventDefault();
-    if (tryParseJSONObject(e.target.value)) {
-      answerTokenEl.classList.remove("r-border");
-      answerTokenEl.classList.add("g-border");
-    } else {
-      answerTokenEl.classList.remove("g-border");
-      answerTokenEl.classList.add("r-border");
-    }
-    e.target.value = e.target.value.trim();
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        type: "recivedAnswer",
+        value: recivedAnswer,
+      });
+    });
   };
 });
 
 ///////
 
 cBtn.addEventListener("click", () => {
+  isHost = false;
+
   cBtn.parentElement.style.display = "none";
   answerTokenEl.style.display = "block";
 
-  const rc = new RTCPeerConnection(servers);
-
-  rc.onicecandidate = (e) => {
-    console.log("🚀  cBtn.onicecandidate  e:", e);
-    offerTokenEl.style.display = "block";
-    offerTokenEl.innerText = JSON.stringify(rc.localDescription);
-    copy(JSON.stringify(rc.localDescription));
-  };
-
-  rc.ondatachannel = (e) => {
-    console.log("🚀  cBtn.ondatachannel  e:", e);
-    rc.dc = e.channel;
-
-    e.channel.onmessage = (e) => {
-      console.log("🚀  cBtn.onmessage  e:", e);
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, e.data);
-      });
-    };
-
-    e.channel.onopen = (e) => {
-      console.log("🚀  cBtn.onopen  e:", e);
-      showSuccessUI();
-      window.baser = rc.dc;
-    };
-  };
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      type: "click",
+      value: "clientClicked",
+    });
+  });
 
   answerTokenEl.onkeydown = (e) => {
     if (e.key !== "Enter" || !tryParseJSONObject(e.target.value)) {
       return;
     }
+    answerTokenEl.disabled = true;
 
     e.preventDefault();
     const recivedOffer = JSON.parse(e.target.value);
 
-    rc.setRemoteDescription(recivedOffer)
-      .then((e) => {
-        console.log("🚀 .setRemoteDescription  e:");
-      })
-      .catch((err) => console.log(err));
-
-    rc.createAnswer()
-      .then((answer) => {
-        console.log("🚀  .then  answer:", answer);
-        return rc.setLocalDescription(answer);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  answerTokenEl.oninput = (e) => {
-    e.preventDefault();
-    if (tryParseJSONObject(e.target.value)) {
-      answerTokenEl.classList.remove("r-border");
-      answerTokenEl.classList.add("g-border");
-    } else {
-      answerTokenEl.classList.remove("g-border");
-      answerTokenEl.classList.add("r-border");
-    }
-    e.target.value = e.target.value.trim();
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        type: "recivedOffer",
+        value: recivedOffer,
+      });
+    });
   };
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  window.baser.send(request);
+  console.log("🚀  chrome.runtime.onMessage.addListener  request:", request);
+
+  if (request.type === "offerToken" || request.type === "answerToken") {
+    offerTokenEl.style.display = "block";
+    offerTokenEl.innerText = request.value;
+  }
+
+  copy(request.value);
 });
