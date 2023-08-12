@@ -2,15 +2,17 @@ console.log("🚀   DOMContentLoaded:");
 
 const video = document.getElementsByTagName("video")[0];
 
-video.onpause = (e) => {
-  console.log("🚀  onpause  e:", e);
-  sendPauseVideos();
-};
+if (video) {
+  video.onpause = (e) => {
+    console.log("🚀  onpause  e:", e);
+    sendPauseVideos();
+  };
 
-video.onplay = (e) => {
-  console.log("🚀  onplay  e:", e);
-  sendSyncVideos();
-};
+  video.onplay = (e) => {
+    console.log("🚀  onplay  e:", e);
+    sendSyncVideos();
+  };
+}
 
 const sendPauseVideos = () => {
   console.log("🚀 sendPauseVideos:");

@@ -65,24 +65,22 @@ hBtn.addEventListener("click", () => {
     .catch((err) => console.log(err));
 
   answerTokenEl.onkeydown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-
-      const recivedAnswer = JSON.parse(e.target.value);
-
-      lc.setRemoteDescription(recivedAnswer)
-        .then((e) => {
-          console.log("🚀  .then  e:", e);
-        })
-        .catch((err) => console.log(err));
+    if (e.key !== "Enter" || !tryParseJSONObject(e.target.value)) {
+      return;
     }
+
+    e.preventDefault();
+
+    const recivedAnswer = JSON.parse(e.target.value);
+
+    lc.setRemoteDescription(recivedAnswer)
+      .then((e) => {
+        console.log("🚀  .then  e:", e);
+      })
+      .catch((err) => console.log(err));
   };
 
   answerTokenEl.oninput = (e) => {
-    console.log(
-      "🚀  hBtn.addEventListener  tryParseJSONObject(e.target.value):",
-      tryParseJSONObject(e.target.value)
-    );
     if (tryParseJSONObject(e.target.value)) {
       answerTokenEl.classList.remove("r-border");
       answerTokenEl.classList.add("g-border");
@@ -126,22 +124,34 @@ cBtn.addEventListener("click", () => {
   };
 
   answerTokenEl.onkeydown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const recivedOffer = JSON.parse(e.target.value);
+    if (e.key !== "Enter" || !tryParseJSONObject(e.target.value)) {
+      return;
+    }
 
-      rc.setRemoteDescription(recivedOffer)
-        .then((e) => {
-          console.log("🚀 .setRemoteDescription  e:", e);
-        })
-        .catch((err) => console.log(err));
+    e.preventDefault();
+    const recivedOffer = JSON.parse(e.target.value);
 
-      rc.createAnswer()
-        .then((answer) => {
-          console.log("🚀  .then  answer:", answer);
-          return rc.setLocalDescription(answer);
-        })
-        .catch((err) => console.log(err));
+    rc.setRemoteDescription(recivedOffer)
+      .then((e) => {
+        console.log("🚀 .setRemoteDescription  e:", e);
+      })
+      .catch((err) => console.log(err));
+
+    rc.createAnswer()
+      .then((answer) => {
+        console.log("🚀  .then  answer:", answer);
+        return rc.setLocalDescription(answer);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  answerTokenEl.oninput = (e) => {
+    if (tryParseJSONObject(e.target.value)) {
+      answerTokenEl.classList.remove("r-border");
+      answerTokenEl.classList.add("g-border");
+    } else {
+      answerTokenEl.classList.remove("g-border");
+      answerTokenEl.classList.add("r-border");
     }
   };
 });
